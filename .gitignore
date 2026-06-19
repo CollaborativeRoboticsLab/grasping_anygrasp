@@ -1,0 +1,4 @@
+weights/detection/**
+weights/tracking/**
+license/**
+cyclonedds.xml
