@@ -29,7 +29,7 @@ Install VSCode and add the [DevContainer addon](https://marketplace.visualstudio
 
 Clone this repo and open using VSCode. Generally VScode should auto detect, if not press Shift+Ctrl+P to open the command palette and select "DevContainer: Rebuild and Reopen the container" option.
 
-Following are quick commands to match our specific setup. Read relevant sections under `System architecture` to find other supported commands.
+Following are quick commands to match our specific setup.
 
 ## Connecting with External Docker Containers/Devcontainers
 
