@@ -1,5 +1,5 @@
 {
-  "name": "Omron Anygrasp Grasping Humble base",
+  "name": "TM Robot S series Anygrasp Grasping Humble base",
   "dockerFile": "Dockerfile",
   "remoteUser": "ubuntu",
   "containerEnv": {
