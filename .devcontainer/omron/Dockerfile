@@ -225,6 +225,7 @@ RUN apt-get update && \
 WORKDIR /home/ubuntu/colcon_ws/src/
 
 RUN git clone https://github.com/CollaborativeRoboticsLab/tmr_ros2.git -b humble
+RUN git clone https://github.com/CollaborativeRoboticsLab/tm2_ros2.git -b humble
 
 ############################################################################
 ####        Install grippers packages
