@@ -4,13 +4,15 @@
   "remoteUser": "ubuntu",
   "containerEnv": {
     "DISPLAY": "${localEnv:DISPLAY}"
+    // "CYCLONEDDS_URI": "/home/ubuntu/colcon_ws/src/grasping/cyclonedds.xml",
+    // "ROS_DOMAIN_ID": "76"
   },
   "runArgs": [
-    "--hostname",
-    "kalana-laptop",
     "--privileged",
     "--network=bridge",
     "--mac-address=02:42:de:ad:be:ef",
+    // "-p",
+    // "26400-26420:26400-26420/udp",
     "--gpus",
     "all"
   ],

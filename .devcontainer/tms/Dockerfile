@@ -218,6 +218,10 @@ RUN apt-get update && \
     ros-${ROS_DISTRO}-joint-state-broadcaster \
     ros-${ROS_DISTRO}-joint-state-publisher \
     ros-${ROS_DISTRO}-joint-state-publisher-gui \
+    ros-${ROS_DISTRO}-gazebo-ros-pkgs \
+    ros-${ROS_DISTRO}-ros-gz \
+    ros-${ROS_DISTRO}-ros-gz-sim \
+    ros-${ROS_DISTRO}-ign-ros2-control \
     ros-${ROS_DISTRO}-vision-opencv \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/*

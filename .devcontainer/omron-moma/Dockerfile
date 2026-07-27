@@ -176,6 +176,7 @@ RUN apt-get update && \
     ros-${ROS_DISTRO}-ros-base \
     ros-${ROS_DISTRO}-rqt-tf-tree \
     ros-${ROS_DISTRO}-rmw-cyclonedds-cpp \
+    ros-${ROS_DISTRO}-teleop-twist-joy \
     ros-dev-tools  \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/*
@@ -218,6 +219,10 @@ RUN apt-get update && \
     ros-${ROS_DISTRO}-joint-state-broadcaster \
     ros-${ROS_DISTRO}-joint-state-publisher \
     ros-${ROS_DISTRO}-joint-state-publisher-gui \
+    ros-${ROS_DISTRO}-gazebo-ros-pkgs \
+    ros-${ROS_DISTRO}-ros-gz \
+    ros-${ROS_DISTRO}-ros-gz-sim \
+    ros-${ROS_DISTRO}-ign-ros2-control \
     ros-${ROS_DISTRO}-vision-opencv \
     ros-${ROS_DISTRO}-navigation2 \
     ros-${ROS_DISTRO}-nav2-bringup \
@@ -228,7 +233,7 @@ RUN apt-get update && \
 WORKDIR /home/ubuntu/colcon_ws/src/
 
 RUN git clone https://github.com/CollaborativeRoboticsLab/tmr_ros2.git -b humble
-RUN git clone https://github.com/CollaborativeRoboticsLab/omron_base.git -b humble
+RUN git clone --recurse-submodules https://github.com/CollaborativeRoboticsLab/omron_amr.git -b humble
 RUN git clone https://github.com/CollaborativeRoboticsLab/omron_moma.git -b humble
 
 ############################################################################
