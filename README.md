@@ -14,6 +14,12 @@ Read here for [known issues and how we fixed them](./docs/issues.md)
 
 ![System Architecture](./docs/system.png)
 
+### Camera Driver
+
+Camera setup, configuration, and customization are documented in the linked file. The current supported device is:
+
+- [Realsense Camera](https://github.com/CollaborativeRoboticsLab/anygrasp_ros/blob/main/docs/camera/realsense.md)
+
 ### RGBD to Pointcloud (via external devcontainer)
 
 As shown in the system architecture diagram, the RGB and depth images are combined into a colored point cloud before grasp detection. This is done by `anygrasp_ros/rgbd_to_pointcloud_node`, which subscribes to the RGB and depth image topics, synchronizes them, and publishes the resulting colored point cloud for grasp pose detection. Check the Anygrasp Node section for instructions on connecting to the external devcontainer.
@@ -28,12 +34,6 @@ This grasping stack uses AnyGrasp for grasp pose detection. This container does 
 - [Tracking Node](https://github.com/CollaborativeRoboticsLab/anygrasp_ros/blob/main/docs/tracking.md)
 
 To connect with anygrasp_ros external devcontainer, follow the instructions on [CollaborativeRoboticsLab/anygrasp_ros](https://github.com/CollaborativeRoboticsLab/anygrasp_ros/blob/main/docs/external/dds_configuration.md). Use the `host.xml` file since this container is configured for `network=host` mode. 
-
-### Camera Driver
-
-Camera setup, configuration, and customization are documented in the linked file. The current supported device is:
-
-- [Realsense Camera](https://github.com/CollaborativeRoboticsLab/grasping/blob/main/docs/camera/realsense.md)
 
 ### Gripper Controller
 
@@ -87,7 +87,7 @@ Use the following command to start the realsense D435 camera.
 
 ```bash
 source install/setup.bash
-ros2 launch grasping_camera d435.launch.py
+ros2 launch anygrasp_realsense d435.launch.py
 ```
 
 ### Starting the AnyGrasp Detection System
