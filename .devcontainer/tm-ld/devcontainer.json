@@ -3,14 +3,13 @@
   "dockerFile": "Dockerfile",
   "remoteUser": "ubuntu",
   "containerEnv": {
-    "DISPLAY": "${localEnv:DISPLAY}"
+    "DISPLAY": "${localEnv:DISPLAY}",
+    "ROS_DOMAIN_ID": "1",
+    "CYCLONEDDS_URI": "file:///home/ubuntu/colcon_ws/src/anygrasp_ros/bridge.xml"
   },
   "runArgs": [
-    "--hostname",
-    "kalana-laptop",
     "--privileged",
-    "--network=bridge",
-    "--mac-address=02:42:de:ad:be:ef",
+    "--network=host",
     "--gpus",
     "all"
   ],

@@ -3,24 +3,13 @@
   "dockerFile": "Dockerfile",
   "remoteUser": "ubuntu",
   "containerEnv": {
-    "DISPLAY": "${localEnv:DISPLAY}"
-    // "CYCLONEDDS_URI": "/home/ubuntu/colcon_ws/src/grasping/cyclonedds.xml",
-    // "ROS_DOMAIN_ID": "76"
+    "DISPLAY": "${localEnv:DISPLAY}",
+    "ROS_DOMAIN_ID": "1",
+    "CYCLONEDDS_URI": "file:///home/ubuntu/colcon_ws/src/anygrasp_grasping/host.xml"
   },
   "runArgs": [
     "--privileged",
-    "--network=bridge",
-    "--mac-address=02:42:de:ad:be:ef",
-    "-p",
-    "50001:50001",
-    "-p",
-    "50002:50002",
-    "-p",
-    "50003:50003",
-    "-p",
-    "50004:50004",
-    // "-p",
-    // "26400-26420:26400-26420/udp",
+    "--network=host",
     "--gpus",
     "all"
   ],
