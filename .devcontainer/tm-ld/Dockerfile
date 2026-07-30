@@ -126,10 +126,4 @@ RUN mkdir -p /home/ubuntu/colcon_ws/src /home/ubuntu/colcon_ws/build /home/ubunt
 # Switch from root to user
 USER $USERNAME
 
-# Source the ROS setup file and set a custom PS1 prompt in the user's bashrc
-RUN cat <<'EOF' >> ~/.bashrc
-source /opt/ros/${ROS_DISTRO}/setup.bash
-PS1='${debian_chroot:+($debian_chroot)}\[\033[01;32m\]\u@\h\[\033[00m\]:\[\033[01;34m\]\w\[\033[00m\]\$ '
-EOF
-
 WORKDIR /
