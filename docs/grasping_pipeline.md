@@ -1,14 +1,14 @@
 # AnyGrasp Grasping Pipeline
 
-This document covers the pipeline controller implemented by the `anygrasp_grasping` package.
+This document covers the pipeline controller implemented by the `grasping_anygrasp` package.
 
 ## Node
 
-- Package: `anygrasp_grasping`
-- Executable: `anygrasp_grasping`
-- Default node name: `anygrasp_grasping_node`
+- Package: `grasping_anygrasp`
+- Executable: `grasping_anygrasp`
+- Default node name: `grasping_anygrasp_node`
 
-When the node runs in server mode, it exposes the Trigger service `/anygrasp_grasping_node/run_grasp`.
+When the node runs in server mode, it exposes the Trigger service `/grasping_anygrasp_node/run_grasp`.
 
 ## Responsibilities
 
@@ -36,19 +36,19 @@ The node supports two operating modes through `server_mode`.
 Start the node in server mode with:
 
 ```bash
-ros2 run anygrasp_grasping anygrasp_grasping
+ros2 run grasping_anygrasp grasping_anygrasp
 ```
 
 Then on a separate terminal, call the service with:
 
 ```bash
-ros2 service call /anygrasp_grasping_node/run_grasp std_srvs/srv/Trigger {}
+ros2 service call /grasping_anygrasp_node/run_grasp std_srvs/srv/Trigger {}
 ```
 
 ### Trigger the service in one-shot mode
 
 ```bash
-ros2 run anygrasp_grasping anygrasp_grasping --ros-args -p server_mode:=false
+ros2 run grasping_anygrasp grasping_anygrasp --ros-args -p server_mode:=false
 ```
 
 ## Launch
@@ -56,10 +56,10 @@ ros2 run anygrasp_grasping anygrasp_grasping --ros-args -p server_mode:=false
 The package-level launch file is:
 
 ```bash
-ros2 launch anygrasp_grasping grasping_bridge.launch.py
+ros2 launch grasping_anygrasp grasping_bridge.launch.py
 ```
 
-That launch only starts `anygrasp_grasping_node`.
+That launch only starts `grasping_anygrasp_node`.
 
 Start robot driver, MoveIt, and `motion_execution_node` separately through `grasping_control`.
 

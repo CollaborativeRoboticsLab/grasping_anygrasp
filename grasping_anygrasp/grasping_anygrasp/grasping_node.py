@@ -27,7 +27,7 @@ class GraspingNode(Node):
     """
 
     def __init__(self) -> None:
-        super().__init__("anygrasp_grasping_node")
+        super().__init__("grasping_anygrasp_node")
 
         self.declare_parameter("server_mode", True)
         self.declare_parameter("anygrasp_service", "detection")
@@ -56,11 +56,11 @@ class GraspingNode(Node):
 
         if bool(self.get_parameter("server_mode").value):
             self.get_logger().info(
-                "anygrasp_grasping node ready (server_mode=true). Call ~/run_grasp to execute pipeline."
+                "grasping_anygrasp node ready (server_mode=true). Call ~/run_grasp to execute pipeline."
             )
         else:
             self.get_logger().info(
-                "anygrasp_grasping node ready (server_mode=false). Will execute pipeline once and exit."
+                "grasping_anygrasp node ready (server_mode=false). Will execute pipeline once and exit."
             )
 
     def _on_run_grasp(self, _req: Trigger.Request, res: Trigger.Response) -> Trigger.Response:

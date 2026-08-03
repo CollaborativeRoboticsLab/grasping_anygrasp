@@ -3,7 +3,7 @@ from glob import glob
 
 from setuptools import find_packages, setup
 
-package_name = 'anygrasp_grasping'
+package_name = 'grasping_anygrasp'
 
 setup(
     name=package_name,
@@ -28,7 +28,7 @@ setup(
     },
     entry_points={
         'console_scripts': [
-            'anygrasp_grasping = anygrasp_grasping.grasping_node:main',
+            'grasping_anygrasp = grasping_anygrasp.grasping_node:main',
         ],
     },
 )

@@ -5,10 +5,10 @@ from launch_ros.actions import Node
 
 
 def generate_launch_description() -> LaunchDescription:
-	anygrasp_grasping_node = Node(
-		package='anygrasp_grasping',
-		executable='anygrasp_grasping',
-		name='anygrasp_grasping_node',
+	grasping_anygrasp_node = Node(
+		package='grasping_anygrasp',
+		executable='grasping_anygrasp',
+		name='grasping_anygrasp_node',
 		output='screen',
 		parameters=[
 			{
@@ -34,6 +34,6 @@ def generate_launch_description() -> LaunchDescription:
 			DeclareLaunchArgument('gripper_closed_width', default_value='0.0'),
 			DeclareLaunchArgument('gripper_close_effort', default_value='0.0'),
 			DeclareLaunchArgument('do_post_grasp_move', default_value='true'),
-			anygrasp_grasping_node,
+			grasping_anygrasp_node,
 		]
 	)

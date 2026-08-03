@@ -4,7 +4,7 @@
 
 | Argument | Default | Description |
 | --- | --- | --- |
-| `server_mode` | `true` | Exposes the `/anygrasp_grasping_node/run_grasp` Trigger service when enabled. When set to `false`, the node executes one grasp cycle and exits. |
+| `server_mode` | `true` | Exposes the `/grasping_anygrasp_node/run_grasp` Trigger service when enabled. When set to `false`, the node executes one grasp cycle and exits. |
 | `anygrasp_service` | `detection` | Name of the AnyGrasp service queried for candidate grasp poses. |
 | `arm_action_name` | `move_arm_to_pose` | Name of the `grasping_msgs/action/MoveToPose` action server used to forward the selected grasp pose to `motion_execution_node`. |
 | `gripper_action_name` | `/gripper_command` | Name of the `control_msgs/action/GripperCommand` action used for open and close commands. |
