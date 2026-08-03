@@ -16,8 +16,10 @@ def generate_launch_description() -> LaunchDescription:
 				'anygrasp_service': LaunchConfiguration('anygrasp_service'),
 				'arm_action_name': LaunchConfiguration('arm_action_name'),
 				'do_post_grasp_move': LaunchConfiguration('do_post_grasp_move'),
-				'open_action_name': LaunchConfiguration('open_action_name'),
-				'close_action_name': LaunchConfiguration('close_action_name'),
+				'gripper_action_name': LaunchConfiguration('gripper_action_name'),
+				'gripper_open_width': LaunchConfiguration('gripper_open_width'),
+				'gripper_closed_width': LaunchConfiguration('gripper_closed_width'),
+				'gripper_close_effort': LaunchConfiguration('gripper_close_effort'),
 			}
 		],
 	)
@@ -27,8 +29,10 @@ def generate_launch_description() -> LaunchDescription:
 			DeclareLaunchArgument('server_mode', default_value='true'),
 			DeclareLaunchArgument('anygrasp_service', default_value='detection'),
 			DeclareLaunchArgument('arm_action_name', default_value='move_arm_to_pose'),
-			DeclareLaunchArgument('open_action_name', default_value='/open_gripper'),
-			DeclareLaunchArgument('close_action_name', default_value='/close_gripper'),
+			DeclareLaunchArgument('gripper_action_name', default_value='/gripper_command'),
+			DeclareLaunchArgument('gripper_open_width', default_value='0.09'),
+			DeclareLaunchArgument('gripper_closed_width', default_value='0.0'),
+			DeclareLaunchArgument('gripper_close_effort', default_value='0.0'),
 			DeclareLaunchArgument('do_post_grasp_move', default_value='true'),
 			anygrasp_grasping_node,
 		]

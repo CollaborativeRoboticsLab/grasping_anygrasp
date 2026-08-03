@@ -3,6 +3,7 @@ from __future__ import annotations
 from typing import List, Optional, Tuple
 
 import rclpy
+from control_msgs.action import GripperCommand
 from rclpy.action import ActionClient
 from rclpy.node import Node
 
@@ -12,7 +13,6 @@ from geometry_msgs.msg import PoseStamped
 
 from anygrasp_msgs.srv import GetGrasps
 from grasping_msgs.action import MoveToPose
-from gripper_msgs.action import CloseGripper, OpenGripper
 
 
 class GraspingNode(Node):
@@ -33,8 +33,10 @@ class GraspingNode(Node):
         self.declare_parameter("anygrasp_service", "detection")
         self.declare_parameter("arm_action_name", "move_arm_to_pose")
         self.declare_parameter("do_post_grasp_move", True)
-        self.declare_parameter("open_action_name", "/open_gripper")
-        self.declare_parameter("close_action_name", "/close_gripper")
+        self.declare_parameter("gripper_action_name", "/gripper_command")
+        self.declare_parameter("gripper_open_width", 0.09)
+        self.declare_parameter("gripper_closed_width", 0.0)
+        self.declare_parameter("gripper_close_effort", 0.0)
 
         # The grasping node only owns pipeline orchestration. Motion execution is delegated
         # to the arm-control action server so grasp generation and robot control stay decoupled.
@@ -44,11 +46,8 @@ class GraspingNode(Node):
         self._arm_control_client = ActionClient(
             self, MoveToPose, str(self.get_parameter("arm_action_name").value)
         )
-        self._open_client = ActionClient(
-            self, OpenGripper, str(self.get_parameter("open_action_name").value)
-        )
-        self._close_client = ActionClient(
-            self, CloseGripper, str(self.get_parameter("close_action_name").value)
+        self._gripper_client = ActionClient(
+            self, GripperCommand, str(self.get_parameter("gripper_action_name").value)
         )
 
         self._srv = None
@@ -187,48 +186,37 @@ class GraspingNode(Node):
 
         return True
 
-    def open_gripper(self, use_torque_mode: bool = False, torque: float = 0.0) -> bool:
-        if not self._open_client.wait_for_server(timeout_sec=3.0):
-            self.get_logger().error("OpenGripper action server not available.")
-            return False
-
-        goal = OpenGripper.Goal()
-        goal.use_torque_mode = bool(use_torque_mode)
-        goal.torque = float(torque)
-
-        send_future = self._open_client.send_goal_async(goal)
-        rclpy.spin_until_future_complete(self, send_future, timeout_sec=5.0)
-        if not send_future.done() or send_future.result() is None:
-            return False
-
-        goal_handle = send_future.result()
-        if not goal_handle.accepted:
-            return False
-
-        result_future = goal_handle.get_result_async()
-        rclpy.spin_until_future_complete(self, result_future, timeout_sec=20.0)
-        if not result_future.done() or result_future.result() is None:
-            return False
-
-        return bool(result_future.result().result.success)
+    def open_gripper(self, effort: float = 0.0) -> bool:
+        return self._send_gripper_command(
+            position=float(self.get_parameter("gripper_open_width").value),
+            max_effort=float(effort),
+            allow_stall=False,
+        )
 
     def close_gripper_position(self) -> bool:
-        return self._close_gripper(use_torque_mode=False, torque=0.0)
+        return self._close_gripper(effort=float(self.get_parameter("gripper_close_effort").value))
 
     def close_gripper_torque(self, torque: float) -> bool:
-        return self._close_gripper(use_torque_mode=True, torque=float(torque))
+        return self._close_gripper(effort=float(torque))
 
-    def _close_gripper(self, use_torque_mode: bool, torque: float) -> bool:
-        if not self._close_client.wait_for_server(timeout_sec=3.0):
-            self.get_logger().error("CloseGripper action server not available.")
+    def _close_gripper(self, effort: float) -> bool:
+        return self._send_gripper_command(
+            position=float(self.get_parameter("gripper_closed_width").value),
+            max_effort=float(effort),
+            allow_stall=True,
+        )
+
+    def _send_gripper_command(self, *, position: float, max_effort: float, allow_stall: bool) -> bool:
+        action_name = str(self.get_parameter("gripper_action_name").value)
+        if not self._gripper_client.wait_for_server(timeout_sec=3.0):
+            self.get_logger().error(f"GripperCommand action server '{action_name}' not available.")
             return False
 
-        goal = CloseGripper.Goal()
-        goal.close_ratio = 1.0
-        goal.use_torque_mode = bool(use_torque_mode)
-        goal.torque = float(torque)
+        goal = GripperCommand.Goal()
+        goal.command.position = float(position)
+        goal.command.max_effort = float(max_effort)
 
-        send_future = self._close_client.send_goal_async(goal)
+        send_future = self._gripper_client.send_goal_async(goal)
         rclpy.spin_until_future_complete(self, send_future, timeout_sec=5.0)
         if not send_future.done() or send_future.result() is None:
             return False
@@ -242,7 +230,8 @@ class GraspingNode(Node):
         if not result_future.done() or result_future.result() is None:
             return False
 
-        return bool(result_future.result().result.success)
+        result = result_future.result().result
+        return bool(result.reached_goal or (allow_stall and result.stalled))
 
 def main(args: Optional[List[str]] = None) -> None:
     rclpy.init(args=args)

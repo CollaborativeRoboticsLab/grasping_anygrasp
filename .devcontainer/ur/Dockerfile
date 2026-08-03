@@ -92,6 +92,7 @@ RUN git clone https://github.com/CollaborativeRoboticsLab/grasping.git
 RUN apt-get update && \
     apt-get install  --no-install-recommends -y \
     sudo  \
+    iputils-ping \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/*
     
@@ -106,11 +107,10 @@ RUN groupadd --gid $USER_GID $USERNAME \
 RUN echo $USERNAME ALL=\(root\) NOPASSWD:ALL > /etc/sudoers.d/$USERNAME \
     && chmod 0440 /etc/sudoers.d/$USERNAME
 
-RUN mkdir -p /home/ubuntu/colcon_ws/src /home/ubuntu/colcon_ws/build /home/ubuntu/colcon_ws/install /home/ubuntu/colcon_ws/log && \
-    touch /home/ubuntu/.bashrc && \
-    chown -R $USERNAME:$USERNAME /home/ubuntu
-
 # Switch from root to user
 USER $USERNAME
+
+# Source the ROS setup file
+RUN echo "source /opt/ros/${ROS_DISTRO}/setup.bash" >> ~/.bashrc
 
 WORKDIR /

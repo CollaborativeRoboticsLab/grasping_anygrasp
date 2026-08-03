@@ -74,19 +74,20 @@ The returned pose keeps the original point-cloud header. The node forwards that 
 
 ## Gripper Interaction
 
-The node uses the common gripper actions from `gripper_msgs`.
+The node uses the standard `control_msgs/action/GripperCommand` action on `/gripper_command`.
 
-- Open action: `gripper_msgs/action/OpenGripper`
-- Close action: `gripper_msgs/action/CloseGripper`
+- Open command: send `command.position=gripper_open_width` in meters.
+- Close command: send `command.position=gripper_closed_width` in meters.
+- Effort command: send `command.max_effort` in newtons when the active gripper backend is calibrated.
 
-The default grasp cycle uses position-based closing by sending `use_torque_mode=false`.
+The default grasp cycle uses position-based closing by sending `max_effort=gripper_close_effort`.
 
 Available helpers in the node:
 
 - `close_gripper_position()`
 - `close_gripper_torque(torque)`
 
-The numeric meaning of `torque` depends on the gripper driver.
+The helper name is kept for compatibility; the value is sent as `max_effort` to `GripperCommand`.
 
 ## Post-Grasp Move
 
@@ -103,8 +104,10 @@ If `do_post_grasp_move` is enabled, the node asks `motion_execution_node` to exe
 
 ### Gripper Actions
 
-- `open_action_name`: default `/open_gripper`
-- `close_action_name`: default `/close_gripper`
+- `gripper_action_name`: default `/gripper_command`
+- `gripper_open_width`: default `0.09`
+- `gripper_closed_width`: default `0.0`
+- `gripper_close_effort`: default `0.0`
 
 ## Required Services and Actions
 
@@ -112,7 +115,7 @@ For a successful cycle, the node depends on:
 
 1. An AnyGrasp service configured by `anygrasp_service`.
 2. A `grasping_msgs/action/MoveToPose` server configured by `arm_action_name`.
-3. Gripper action servers for `open_action_name` and `close_action_name`.
+3. A `control_msgs/action/GripperCommand` server configured by `gripper_action_name`.
 
 ## Failure Cases
 

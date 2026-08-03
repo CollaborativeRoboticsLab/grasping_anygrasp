@@ -9,11 +9,11 @@
 
   <exec_depend>rclpy</exec_depend>
   <exec_depend>std_srvs</exec_depend>
+  <exec_depend>control_msgs</exec_depend>
   <exec_depend>geometry_msgs</exec_depend>
   <exec_depend>anygrasp_msgs</exec_depend>
   <exec_depend>grasping_control</exec_depend>
   <exec_depend>grasping_msgs</exec_depend>
-  <exec_depend>gripper_msgs</exec_depend>
   <exec_depend>launch</exec_depend>
   <exec_depend>launch_ros</exec_depend>
 
