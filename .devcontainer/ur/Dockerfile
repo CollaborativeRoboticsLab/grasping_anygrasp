@@ -8,19 +8,40 @@ RUN apt-get update && \
     ros-${ROS_DISTRO}-rqt-tf-tree \
     ros-${ROS_DISTRO}-teleop-twist-joy \
     ros-${ROS_DISTRO}-teleop-twist-keyboard \
+    sudo  \
+    iputils-ping \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/*
+
+############################################################################
+####      Add vscode user
+############################################################################
+
+# Add vscode user with same UID and GID as your host system
+# (modified from https://code.visualstudio.com/remote/advancedcontainers/add-nonroot-user#_creating-a-nonroot-user)
+# ubuntu now has a 1000 user ubuntu
+
+ARG USERNAME=ubuntu
+ARG USER_UID=1000
+ARG USER_GID=$USER_UID
+
+RUN groupadd --gid $USER_GID $USERNAME \
+    && useradd --uid $USER_UID --gid $USER_GID -m $USERNAME \
+    && usermod -aG dialout $USERNAME
+
+RUN echo $USERNAME ALL=\(root\) NOPASSWD:ALL > /etc/sudoers.d/$USERNAME \
+    && chmod 0440 /etc/sudoers.d/$USERNAME
 
 ############################################################################
 ####        Install Anygrasp ROS packages
 ############################################################################
 
 # make sure folders exist
-WORKDIR /home/ubuntu/colcon_ws/src
+WORKDIR /home/${USERNAME}/colcon_ws/src
 
 RUN git clone https://github.com/CollaborativeRoboticsLab/anygrasp_ros.git
 
-WORKDIR /home/ubuntu/colcon_ws/src/anygrasp_ros
+WORKDIR /home/${USERNAME}/colcon_ws/src/anygrasp_ros
 
 ## remove the anygrasp_ros package after cloning to avoid accidentally launching
 ## anygrasp_ros package by the user within this devcontainer. The user is 
@@ -70,7 +91,7 @@ RUN apt-get update && \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/*
 
-WORKDIR /home/ubuntu/colcon_ws/src/
+WORKDIR /home/${USERNAME}/colcon_ws/src/
 
 RUN git clone https://github.com/CollaborativeRoboticsLab/grippers.git
 
@@ -78,34 +99,13 @@ RUN git clone https://github.com/CollaborativeRoboticsLab/grippers.git
 ####        Install grasping packages
 ############################################################################
 
-WORKDIR /home/ubuntu/colcon_ws/src/
+WORKDIR /home/${USERNAME}/colcon_ws/src/
 
 RUN git clone https://github.com/CollaborativeRoboticsLab/grasping.git
 
 ############################################################################
-####      Add vscode user
+####        Change user
 ############################################################################
-
-# Add vscode user with same UID and GID as your host system
-# (modified from https://code.visualstudio.com/remote/advancedcontainers/add-nonroot-user#_creating-a-nonroot-user)
-# ubuntu now has a 1000 user ubuntu
-RUN apt-get update && \
-    apt-get install  --no-install-recommends -y \
-    sudo  \
-    iputils-ping \
-    && apt-get clean \
-    && rm -rf /var/lib/apt/lists/*
-    
-ARG USERNAME=ubuntu
-ARG USER_UID=1000
-ARG USER_GID=$USER_UID
-
-RUN groupadd --gid $USER_GID $USERNAME \
-    && useradd --uid $USER_UID --gid $USER_GID -m $USERNAME \
-    && usermod -aG dialout $USERNAME
-
-RUN echo $USERNAME ALL=\(root\) NOPASSWD:ALL > /etc/sudoers.d/$USERNAME \
-    && chmod 0440 /etc/sudoers.d/$USERNAME
 
 # Switch from root to user
 USER $USERNAME
