@@ -1,6 +1,4 @@
-/weights/detection/**
-/weights/tracking/**
-/license/**
+
 /host.xml
 __pycache__/**
 *.pyc
