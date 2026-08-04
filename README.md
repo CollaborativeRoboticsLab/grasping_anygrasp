@@ -1,4 +1,4 @@
-# Anygrasp Grasping
+# Grasping Anygrasp
 
 This meta package brings together the [grasping stack](https://github.com/CollaborativeRoboticsLab/grasping), [AnyGrasp](https://github.com/graspnet/anygrasp_sdk), [anygrasp_ros](https://github.com/CollaborativeRoboticsLab/anygrasp_ros), and the gripper stack into one integration flow.
 
