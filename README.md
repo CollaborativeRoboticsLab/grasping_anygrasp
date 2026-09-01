@@ -6,7 +6,7 @@ It does the following tasks:
 
 1. Call the configured AnyGrasp service for grasp poses.
 2. Forward the selected pose to grasping stack's [grasping_control/motion_execution_node](https://github.com/CollaborativeRoboticsLab/grasping/blob/main/docs/control/control_stack_overview.md) through `grasping_msgs/action/MoveToPose`.
-3. Trigger gripper open/close actions and optionally request the post-grasp move.
+3. Trigger gripper open/close actions and optionally request the configured `post_grasp` named pose through `grasping_msgs/action/MoveToNamedPose`.
 
 Read here for [known issues and how we fixed them](./docs/issues.md)
 
@@ -75,7 +75,7 @@ This component transforms grasp poses, applies workspace obstacles to MoveIt, vi
 
 ### AnyGrasp Grasping Pipeline
 
-This package implements the grasping pipeline and is the main component that orchestrates the AnyGrasp based grasping process: it requests a grasp pose from AnyGrasp, calls the arm-control action, closes the gripper, and optionally runs a post-grasp move. 
+This package implements the grasping pipeline and is the main component that orchestrates the AnyGrasp based grasping process: it requests a grasp pose from AnyGrasp, calls the arm-control pose action, closes the gripper, and optionally runs the configured `post_grasp` named pose. 
 
 - [Grasping pipeline](./docs/grasping_pipeline.md)
 

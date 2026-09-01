@@ -100,6 +100,7 @@ If `do_post_grasp_move` is enabled, the node asks `motion_execution_node` to exe
 - `server_mode`: expose the Trigger service when true, or run once and exit when false
 - `anygrasp_service`: AnyGrasp service name, default `detection`
 - `arm_action_name`: motion-execution action name, default `move_arm_to_pose`
+- `arm_named_pose_action_name`: named-pose action name, default `move_arm_to_named_pose`
 - `do_post_grasp_move`: enable post-grasp motion, default `true`
 
 ### Gripper Actions
@@ -115,7 +116,8 @@ For a successful cycle, the node depends on:
 
 1. An AnyGrasp service configured by `anygrasp_service`.
 2. A `grasping_msgs/action/MoveToPose` server configured by `arm_action_name`.
-3. A `control_msgs/action/GripperCommand` server configured by `gripper_action_name`.
+3. A `grasping_msgs/action/MoveToNamedPose` server configured by `arm_named_pose_action_name` when `do_post_grasp_move` is enabled.
+4. A `control_msgs/action/GripperCommand` server configured by `gripper_action_name`.
 
 ## Failure Cases
 

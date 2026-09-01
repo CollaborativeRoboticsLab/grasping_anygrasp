@@ -12,7 +12,7 @@ from std_srvs.srv import Trigger
 from geometry_msgs.msg import PoseStamped
 
 from anygrasp_msgs.srv import GetGrasps
-from grasping_msgs.action import MoveToPose
+from grasping_msgs.action import MoveToNamedPose, MoveToPose
 
 
 class GraspingNode(Node):
@@ -21,7 +21,7 @@ class GraspingNode(Node):
     1) Request a grasp pose from AnyGrasp (`anygrasp_msgs/srv/GetGrasps`)
     2) Send the target pose to the arm-control action server
     3) Close the gripper
-    4) Optionally send a post-grasp pose to the arm-control action server
+    4) Optionally send the configured post-grasp named pose to the arm-control action server
 
     Trigger the pipeline via the `~run_grasp` Trigger service.
     """
@@ -32,6 +32,7 @@ class GraspingNode(Node):
         self.declare_parameter("server_mode", True)
         self.declare_parameter("anygrasp_service", "detection")
         self.declare_parameter("arm_action_name", "move_arm_to_pose")
+        self.declare_parameter("arm_named_pose_action_name", "move_arm_to_named_pose")
         self.declare_parameter("do_post_grasp_move", True)
         self.declare_parameter("gripper_action_name", "/gripper_command")
         self.declare_parameter("gripper_open_width", 0.09)
@@ -45,6 +46,11 @@ class GraspingNode(Node):
         )
         self._arm_control_client = ActionClient(
             self, MoveToPose, str(self.get_parameter("arm_action_name").value)
+        )
+        self._arm_named_pose_client = ActionClient(
+            self,
+            MoveToNamedPose,
+            str(self.get_parameter("arm_named_pose_action_name").value),
         )
         self._gripper_client = ActionClient(
             self, GripperCommand, str(self.get_parameter("gripper_action_name").value)
@@ -126,7 +132,6 @@ class GraspingNode(Node):
         # resolves everything else from its own MoveIt and workspace configuration.
         goal = MoveToPose.Goal()
         goal.target_pose = target_pose
-        goal.move_to_post_grasp_pose = False
 
         send_future = self._arm_control_client.send_goal_async(goal)
         rclpy.spin_until_future_complete(self, send_future, timeout_sec=10.0)
@@ -153,30 +158,31 @@ class GraspingNode(Node):
         return True
 
     def _move_to_post_grasp_pose(self) -> bool:
-        action_name = str(self.get_parameter("arm_action_name").value)
-        if not self._arm_control_client.wait_for_server(timeout_sec=5.0):
-            self.get_logger().error(f"Arm control action server '{action_name}' not available.")
+        action_name = str(self.get_parameter("arm_named_pose_action_name").value)
+        if not self._arm_named_pose_client.wait_for_server(timeout_sec=5.0):
+            self.get_logger().error(
+                f"Arm named-pose action server '{action_name}' not available."
+            )
             return False
 
-        goal = MoveToPose.Goal()
-        goal.target_pose = PoseStamped()
-        goal.move_to_post_grasp_pose = True
+        goal = MoveToNamedPose.Goal()
+        goal.pose_name = "post_grasp"
 
-        send_future = self._arm_control_client.send_goal_async(goal)
+        send_future = self._arm_named_pose_client.send_goal_async(goal)
         rclpy.spin_until_future_complete(self, send_future, timeout_sec=10.0)
         if not send_future.done() or send_future.result() is None:
-            self.get_logger().error("Failed to send arm-control post-grasp goal.")
+            self.get_logger().error("Failed to send arm named-pose post-grasp goal.")
             return False
 
         goal_handle = send_future.result()
         if not goal_handle.accepted:
-            self.get_logger().error("Arm-control post-grasp goal was rejected.")
+            self.get_logger().error("Arm named-pose post-grasp goal was rejected.")
             return False
 
         result_future = goal_handle.get_result_async()
         rclpy.spin_until_future_complete(self, result_future, timeout_sec=60.0)
         if not result_future.done() or result_future.result() is None:
-            self.get_logger().error("Arm-control post-grasp result not received.")
+            self.get_logger().error("Arm named-pose post-grasp result not received.")
             return False
 
         result = result_future.result().result
