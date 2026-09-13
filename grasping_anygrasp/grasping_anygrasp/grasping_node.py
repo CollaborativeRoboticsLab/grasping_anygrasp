@@ -131,7 +131,9 @@ class GraspingNode(Node):
         # The action goal is intentionally minimal: one PoseStamped target and the server
         # resolves everything else from its own MoveIt and workspace configuration.
         goal = MoveToPose.Goal()
-        goal.target_pose = target_pose
+        goal.pose = target_pose.pose
+        goal.planning_frame = target_pose.header.frame_id
+        goal.target_frame = ''
 
         send_future = self._arm_control_client.send_goal_async(goal)
         rclpy.spin_until_future_complete(self, send_future, timeout_sec=10.0)
